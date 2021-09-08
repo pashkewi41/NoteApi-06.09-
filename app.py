@@ -13,15 +13,16 @@ from config import Config
 api.add_resource(UsersListResource,
                  '/users')  # GET, POST
 api.add_resource(UserResource,
-                 '/users/<int:user_id>')  # GET, PUT
+                 '/users/<int:user_id>')  # GET, PUT, DELETE
 
-api.add_resource(TokenResource, '/auth/token')
+api.add_resource(TokenResource,
+                 '/auth/token')  # GET
 
 api.add_resource(NotesListResource,
                  '/notes',  # GET, POST
                  )
 api.add_resource(NoteResource,
-                 '/notes/<int:note_id>',  # GET, PUT
+                 '/notes/<int:note_id>',  # GET, PUT, DELETE
                  )
 
 if __name__ == '__main__':

@@ -76,10 +76,28 @@ class TestUsers(TestCase):
         self.assertEqual(data[1]["username"], users_data[1]["username"])
 
     def test_user_not_found(self):
+        """
+        Получение несуществующего пользователя
+        """
         res = self.client.get('/users/1')
         self.assertEqual(res.status_code, 404)
 
     def test_unique_username(self):
+        """
+        Проверяет невозможность создания нескольких пользователей с одинаковым username
+        """
+        pass
+
+    def test_edit_user(self):
+        """
+        Редактирование пользователя
+        """
+        pass
+
+    def test_delete_user(self):
+        """
+        Удаление пользователя
+        """
         pass
 
     def tearDown(self):
@@ -174,7 +192,16 @@ class TestNotes(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data["text"], notes_data[0]["text"])
 
+    def test_note_not_found(self):
+        """
+        Получение заметки с несуществующим id
+        """
+        pass
+
     def test_private_public_notes(self):
+        """
+        Проверка создания/получения публичных/приватных заметок
+        """
         notes_data = [
             {
                 "text": 'Public Test note 1',
@@ -200,6 +227,16 @@ class TestNotes(TestCase):
         self.assertFalse(data[0]["private"])
         self.assertTrue(data[1]["private"])
         self.assertTrue(data[2]["private"])
+
+    def test_edit_note(self):
+        """
+        Редактирование заметки
+        """
+
+    def test_delete_note(self):
+        """
+        Удаление заметки
+        """
 
     def tearDown(self):
         with self.app.app_context():
