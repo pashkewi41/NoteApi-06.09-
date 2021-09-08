@@ -6,13 +6,19 @@ from api.schemas.user import user_schema, users_schema
 class UserResource(Resource):
     def get(self, user_id):
         user = UserModel.query.get(user_id)
-        if user:
+        if not user:
             abort(404, error=f"User with id={user_id} not found")
         return user_schema.dump(user), 200
 
-    @auth.login_required
+    @auth.login_required(role="admin")
     def put(self, user_id):
-        raise NotImplemented  # не реализовано!
+        parser = reqparse.RequestParser()
+        parser.add_argument("username", required=True)
+        user_data = parser.parse_args()
+        user = UserModel.query.get(user_id)
+        user.username = user_data["username"]
+        user.save()
+        return user_schema.dump(user), 200
 
     @auth.login_required
     def delete(self, user_id):

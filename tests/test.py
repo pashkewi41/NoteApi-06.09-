@@ -139,6 +139,7 @@ class TestNotes(TestCase):
     def test_create_node(self):
         note_data = {
             "text": 'Test note 1',
+            "private": False
         }
         res = self.client.post('/notes',
                                headers=self.headers,
@@ -146,7 +147,7 @@ class TestNotes(TestCase):
                                content_type='application/json')
         data = json.loads(res.data)
         self.assertEqual(data["text"], note_data["text"])
-        self.assertTrue(data["private"])
+        self.assertFalse(data["private"])
 
     def test_get_notes(self):
         notes_data = [
@@ -198,6 +199,8 @@ class TestNotes(TestCase):
         """
         pass
 
+
+
     def test_private_public_notes(self):
         """
         Проверка создания/получения публичных/приватных заметок
@@ -237,6 +240,45 @@ class TestNotes(TestCase):
         """
         Удаление заметки
         """
+        notes_data = [
+            {
+                "text": 'Test note 1',
+            },
+            {
+                "text": 'Test note 2',
+            }
+        ]
+        ids = []
+        for note_data in notes_data:
+            note = NoteModel(author_id=self.user.id, **note_data)
+            note.save()
+            ids.append(note.id)
+
+        res = self.client.delete('/notes/2', headers=self.headers)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["text"], notes_data[1]["text"])
+
+    def test_delete_not_found_note(self):
+        """
+        Удаление заметки
+        """
+        notes_data = [
+            {
+                "text": 'Test note 1',
+            },
+            {
+                "text": 'Test note 2',
+            }
+        ]
+        ids = []
+        for note_data in notes_data:
+            note = NoteModel(author_id=self.user.id, **note_data)
+            note.save()
+            ids.append(note.id)
+
+        res = self.client.delete('/notes/3', headers=self.headers)
+        self.assertEqual(res.status_code, 404)
 
     def tearDown(self):
         with self.app.app_context():
