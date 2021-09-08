@@ -37,10 +37,8 @@ class NoteResource(Resource):
 
 
 class NotesListResource(Resource):
-    @auth.login_required
     def get(self):
-        author = g.user
-        notes = NoteModel.query.filter_by(author_id=author.id)
+        notes = NoteModel.query.all()
         return notes_schema.dump(notes), 200
 
     @auth.login_required
