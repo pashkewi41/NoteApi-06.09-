@@ -17,7 +17,6 @@ class UserResource(MethodResource):
         params={'user_id': {'description': 'user id'}},
         responses={
             "200": {
-
                 "description": "Return user",
                 "content":
                     {"application/json": []}
