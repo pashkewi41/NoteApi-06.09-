@@ -1,9 +1,13 @@
 from api import auth, abort, g, Resource, reqparse
 from api.models.note import NoteModel
 from api.schemas.note import note_schema, notes_schema
+from flask_apispec.views import MethodResource
+from flask_apispec import marshal_with, use_kwargs, doc
+from webargs import fields
 
 
-class NoteResource(Resource):
+@doc(tags=['Notes'])
+class NoteResource(MethodResource):
     @auth.login_required
     def get(self, note_id):
         author = g.user
@@ -44,9 +48,13 @@ class NoteResource(Resource):
         return note_dict, 200
 
 
-class NotesListResource(Resource):
+@doc(tags=['Notes'])
+class NotesListResource(MethodResource):
+    @auth.login_required
+    @doc(security=[{"basicAuth": []}])
     def get(self):
-        notes = NoteModel.query.all()
+        author = g.user
+        notes = NoteModel.query.filter_by(author_id=author.id)
         return notes_schema.dump(notes), 200
 
     @auth.login_required
