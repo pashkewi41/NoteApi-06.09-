@@ -9,6 +9,7 @@ from webargs import fields
 @doc(tags=['Notes'])
 class NoteResource(MethodResource):
     @auth.login_required
+    @doc(summary="Get user by id", security=[{"basicAuth": []}])
     def get(self, note_id):
         author = g.user
         note = NoteModel.query.get(note_id)
@@ -51,7 +52,7 @@ class NoteResource(MethodResource):
 @doc(tags=['Notes'])
 class NotesListResource(MethodResource):
     @auth.login_required
-    @doc(security=[{"basicAuth": []}])
+    @doc(summary="Get user by id", security=[{"basicAuth": []}])
     def get(self):
         author = g.user
         notes = NoteModel.query.filter_by(author_id=author.id)
