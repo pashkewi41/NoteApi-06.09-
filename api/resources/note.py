@@ -98,9 +98,9 @@ class NoteAddTagsResource(MethodResource):
 @doc(tags=['NotesFilter'])
 class NoteFilterResource(MethodResource):
     # GET: /notes/filter?tag=<tag_name>
-    @use_kwargs({"username": fields.Str()}, location='query')
+    @use_kwargs({"tag": fields.Str()}, location='query')
     @marshal_with(NoteSchema(many=True), code=200)
     def get(self, **kwargs):
         print("query=", kwargs)
-        notes = NoteModel.query.filter(UserModel.username == 'admin')
+        notes = NoteModel.query.filter(NoteModel.tags.any(name=kwargs["tag"]))
         return notes, 200
