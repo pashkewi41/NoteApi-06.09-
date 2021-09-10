@@ -280,6 +280,16 @@ class TestNotes(TestCase):
         res = self.client.delete('/notes/3', headers=self.headers)
         self.assertEqual(res.status_code, 404)
 
+    # def test_filter_notes_by_username(self):
+    #     notes_data = [
+    #         {
+    #             "text": 'Test note 1',
+    #         },
+    #         {
+    #             "text": 'Test note 2',
+    #         }
+    #     ]
+
     def tearDown(self):
         with self.app.app_context():
             # drop all tables

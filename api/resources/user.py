@@ -24,7 +24,7 @@ from webargs import fields
 class UserResource(MethodResource):
     @doc(summary="Get user by id", description="Returns user")
     @doc(responses={404: {"description": 'User not found'}})
-    @marshal_with(UserSchema)
+    @marshal_with(UserSchema, code=200)
     def get(self, user_id):
         user = UserModel.query.get(user_id)
         if not user:
@@ -58,13 +58,13 @@ class UserResource(MethodResource):
 
 @doc(tags=['Users'])
 class UsersListResource(MethodResource):
-    @marshal_with(UserSchema(many=True))
+    @marshal_with(UserSchema(many=True), code=200)
     def get(self):
         users = UserModel.query.all()
         return users, 200
 
     @use_kwargs(UserRequestSchema, location='json')
-    @marshal_with(UserSchema)
+    @marshal_with(UserSchema, code=201)
     def post(self, **kwargs):
         user = UserModel(**kwargs)
         user.save()
