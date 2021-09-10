@@ -1,6 +1,6 @@
 from api import auth, abort, g, Resource, reqparse
 from api.models.note import NoteModel
-from api.schemas.note import note_schema, notes_schema
+from api.schemas.note import note_schema, notes_schema, NoteSchema
 from flask_apispec.views import MethodResource
 from flask_apispec import marshal_with, use_kwargs, doc
 from webargs import fields
@@ -40,13 +40,19 @@ class NoteResource(MethodResource):
         note.save()
         return note_schema.dump(note), 200
 
+    @auth.login_required
+    @doc(description='Delete note by id')
+    @doc(responses={401: {"description": "Not authorization"}})
+    @doc(responses={404: {"description": "Not found"}})
+    @marshal_with(NoteSchema)
+    @doc(security=[{"basicAuth": []}])
     def delete(self, note_id):
         note = NoteModel.query.get(note_id)
         if not note:
             abort(404, error=f"Note with id:{note_id} not found")
-        note_dict = note_schema.dump(note)
+        # FIXME: добавить удаление только своих заметок
         note.delete()
-        return note_dict, 200
+        return note, 200
 
 
 @doc(tags=['Notes'])
