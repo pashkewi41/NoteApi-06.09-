@@ -4,6 +4,7 @@ from api.schemas.user import user_schema, users_schema, UserSchema, UserRequestS
 from flask_apispec.views import MethodResource
 from flask_apispec import marshal_with, use_kwargs, doc
 from webargs import fields
+import logging
 
 
 # @doc(
@@ -70,4 +71,5 @@ class UsersListResource(MethodResource):
         user.save()
         if not user.id:
             abort(400, error=f"User with username:{user.username} already exist")
+        logging.info("User create!!!")
         return user, 201

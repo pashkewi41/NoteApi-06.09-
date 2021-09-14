@@ -101,7 +101,6 @@ class NoteFilterResource(MethodResource):
     @use_kwargs({"tag": fields.Str()}, location='query')
     @marshal_with(NoteSchema(many=True), code=200)
     def get(self, **kwargs):
-        # print("query=", kwargs)
         notes = NoteModel.query.filter(NoteModel.tags.any(name=kwargs["tag"]))
         return notes, 200
 
