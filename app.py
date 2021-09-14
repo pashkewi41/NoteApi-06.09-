@@ -5,6 +5,7 @@ from api.resources.user import UserResource, UsersListResource
 from api.resources.auth import TokenResource
 from api.resources.tag import TagsResource, TagsListResource
 from config import Config
+from api import Message, mail
 
 # CRUD
 
@@ -48,5 +49,12 @@ docs.register(NoteFilterResource)
 docs.register(NoteAddTagsResource)
 docs.register(NoteFilterByUsernameResource)
 docs.register(TagsListResource)
+
+msg = Message('test subject', sender=Config.ADMINS[0], recipients=Config.ADMINS)
+msg.body = 'text body'
+msg.html = '<b>HTML</b> body'
+
 if __name__ == '__main__':
+    with app.app_context():
+        mail.send(msg)
     app.run(debug=Config.DEBUG, port=Config.PORT)
