@@ -1,6 +1,7 @@
 from api import api, app, docs
 from api.resources.note import NoteResource, NotesListResource, \
-    NoteFilterResource, NoteAddTagsResource, NoteFilterByUsernameResource
+    NoteFilterResource, NoteAddTagsResource, NoteFilterByUsernameResource,\
+    NoteRestoreResource
 from api.resources.user import UserResource, UsersListResource
 from api.resources.auth import TokenResource
 from api.resources.tag import TagsResource, TagsListResource
@@ -27,6 +28,9 @@ api.add_resource(NotesListResource,
 api.add_resource(NoteResource,
                  '/notes/<int:note_id>',  # GET, PUT, DELETE
                  )
+api.add_resource(NoteRestoreResource,
+                 '/notes/<int:note_id>/restore',  # PUT
+                 )
 api.add_resource(NoteAddTagsResource,
                  '/notes/<int:note_id>/tags',  # PUT
                  )
@@ -44,6 +48,7 @@ api.add_resource(TagsListResource,
 docs.register(UserResource)
 docs.register(UsersListResource)
 docs.register(NoteResource)
+docs.register(NoteRestoreResource)
 docs.register(NotesListResource)
 docs.register(NoteFilterResource)
 docs.register(NoteAddTagsResource)
@@ -55,6 +60,6 @@ msg.body = 'text body'
 msg.html = '<b>HTML</b> body'
 
 if __name__ == '__main__':
-    with app.app_context():
-        mail.send(msg)
+    # with app.app_context():
+    #     mail.send(msg)
     app.run(debug=Config.DEBUG, port=Config.PORT)

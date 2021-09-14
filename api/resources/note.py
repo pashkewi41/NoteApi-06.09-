@@ -80,6 +80,21 @@ class NotesListResource(MethodResource):
         note.save()
         return note, 201
 
+@doc(tags=['Notes'])
+class NoteRestoreResource(MethodResource):
+    # PUT: /notes/{id}/restore
+    # @use_kwargs({"tags": fields.List(fields.Int())}, location="json")
+    @marshal_with(NoteSchema, code=200)
+    def put(self, note_id):
+        note = NoteModel.query.get(note_id)
+        if not note:
+            abort(404, error="Not found")
+
+        if not note.archive:
+            return {}, 304
+
+        note.restore()
+        return note, 200
 
 @doc(tags=['Notes'])
 class NoteAddTagsResource(MethodResource):
