@@ -17,6 +17,11 @@ class UserSchema(ma.SQLAlchemySchema):
     is_staff = ma.auto_field()
     role = ma.auto_field()
 
+    _links = ma.Hyperlinks({
+        'self': ma.URLFor('userresource', values=dict(user_id="<id>")),
+        'collection': ma.URLFor('userslistresource')
+    })
+
 
 # Десериализация запроса(request)
 class UserRequestSchema(ma.SQLAlchemySchema):
