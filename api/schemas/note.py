@@ -24,13 +24,21 @@ class NoteSchema(ma.SQLAlchemyAutoSchema):
     })
 
 
-class NoteRequestSchema(ma.SQLAlchemyAutoSchema):
+class NoteCreateSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = NoteModel
         fields = ["text", "private"]
 
     # text = ma.auto_field()
     # private = ma.auto_field()
+
+
+class NoteEditSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = NoteModel
+    text = ma.auto_field(required=False)
+    private = ma.auto_field(required=False)
+
 
 
 class NoteFilterSchema(ma.SQLAlchemySchema):

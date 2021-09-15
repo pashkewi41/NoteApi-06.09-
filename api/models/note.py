@@ -17,6 +17,10 @@ class NoteModel(db.Model):
     private = db.Column(db.Boolean(), default=True, server_default=expression.true(), nullable=False)
     archive = db.Column(db.Boolean(), default=False, server_default=expression.false(), nullable=False)
 
+    @classmethod
+    def get_all_for_user(cls, author):
+        return cls.query.filter_by(author_id=author.id).filter_by(archive=False)
+
     def save(self):
         db.session.add(self)
         db.session.commit()

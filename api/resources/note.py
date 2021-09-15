@@ -2,30 +2,30 @@ from api import auth, abort, g, Resource, reqparse
 from api.models.note import NoteModel
 from api.models.user import UserModel
 from api.models.tag import TagModel
-from api.schemas.note import NoteSchema, NoteRequestSchema, NoteFilterSchema
+from api.schemas.note import NoteSchema, NoteCreateSchema, NoteEditSchema
 from flask_apispec.views import MethodResource
 from flask_apispec import marshal_with, use_kwargs, doc
 from webargs import fields
+from sqlalchemy.orm.exc import NoResultFound
 
 
 @doc(tags=['Notes'])
 class NoteResource(MethodResource):
     @auth.login_required
-    @doc(summary="Get user by id", security=[{"basicAuth": []}])
+    @doc(summary="Get note by id", security=[{"basicAuth": []}])
     @marshal_with(NoteSchema)
     def get(self, note_id):
         author = g.user
-        note = NoteModel.query.get(note_id)
-        if not note:
+        try:
+            note = NoteModel.get_all_for_user(author).filter_by(id=note_id).one()
+            return note, 200
+        except NoResultFound:
             abort(404, error=f"Note with id={note_id} not found")
-        if note.author != author:
-            abort(403, error=f"Forbidden")
-        return note, 200
 
     @auth.login_required
-    @doc(summary="Edit user by id", security=[{"basicAuth": []}])
+    @doc(summary="Edit note by id", security=[{"basicAuth": []}])
+    @use_kwargs(NoteEditSchema)
     @marshal_with(NoteSchema)
-    @use_kwargs(NoteRequestSchema)
     def put(self, note_id, **kwargs):
         author = g.user
         note = NoteModel.query.get(note_id)
@@ -33,8 +33,10 @@ class NoteResource(MethodResource):
             abort(404, error=f"note {note_id} not found")
         if note.author != author:
             abort(403, error=f"Forbidden")
-        note.text = kwargs["text"]
-        note.private = kwargs.get("private") or note.private
+        if kwargs.get("text") is not None:
+            note.text = kwargs.get("text")
+        if kwargs.get("private") is not None:
+            note.private = kwargs.get("private")
         note.save()
         return note, 200
 
@@ -59,13 +61,13 @@ class NotesListResource(MethodResource):
     @marshal_with(NoteSchema(many=True), code=200)
     def get(self):
         author = g.user
-        notes = NoteModel.query.filter_by(author_id=author.id)
+        notes = NoteModel.get_all_for_user(author)
         return notes, 200
 
     @auth.login_required
     @doc(summary="Create note", security=[{"basicAuth": []}])
     @marshal_with(NoteSchema, code=201)
-    @use_kwargs(NoteRequestSchema)
+    @use_kwargs(NoteCreateSchema)
     def post(self, **kwargs):
         author = g.user
         note = NoteModel(author_id=author.id, **kwargs)
