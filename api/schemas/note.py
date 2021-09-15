@@ -7,14 +7,14 @@ from api.schemas.tag import TagSchema
 #       schema        flask-restful
 # object ------>  dict ----------> json
 
-class NoteSchema(ma.SQLAlchemySchema):
+class NoteSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = NoteModel
 
-    id = ma.auto_field()
-    text = ma.auto_field()
-    private = ma.auto_field()
-    archive = ma.auto_field()
+    # id = ma.auto_field()
+    # text = ma.auto_field()
+    # private = ma.auto_field()
+    # archive = ma.auto_field()
     author = ma.Nested(UserSchema())
     tags = ma.Nested(TagSchema(many=True))
 
@@ -24,13 +24,15 @@ class NoteSchema(ma.SQLAlchemySchema):
     })
 
 
-class NoteReuestSchema(ma.SQLAlchemySchema):
+class NoteRequestSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = NoteModel
+        fields = ["text", "private"]
 
-    text = ma.auto_field()
-    private = ma.auto_field()
+    # text = ma.auto_field()
+    # private = ma.auto_field()
 
 
-note_schema = NoteSchema()
-notes_schema = NoteSchema(many=True)
+class NoteFilterSchema(ma.SQLAlchemySchema):
+    private = ma.Boolean(required=False)
+    tag = ma.String(required=False)

@@ -3,6 +3,7 @@ from passlib.apps import custom_app_context as pwd_context
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.sql import expression
 
 
 class UserModel(db.Model):
@@ -10,9 +11,7 @@ class UserModel(db.Model):
     username = db.Column(db.String(32), unique=True)
     password_hash = db.Column(db.String(128))
     notes = db.relationship('NoteModel', backref='author', lazy='dynamic')
-    # FIXME: server_default="false" --> server_default=False
-    is_staff = db.Column(db.Boolean(), default=False,
-                         server_default="false", nullable=False)
+    is_staff = db.Column(db.Boolean(), default=False, server_default=expression.false(), nullable=False)
     role = db.Column(db.String(32), nullable=False, server_default="admin", default="simple_user")
 
     def __init__(self, username, password):
@@ -43,7 +42,6 @@ class UserModel(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
-
 
     @staticmethod
     def verify_auth_token(token):
