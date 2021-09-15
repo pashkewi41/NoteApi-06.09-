@@ -19,7 +19,8 @@ class NoteModel(db.Model):
 
     @classmethod
     def get_all_for_user(cls, author):
-        return cls.query.filter_by(author_id=author.id).filter_by(archive=False)
+        return cls.query.filter((NoteModel.author.has(id=author.id)) | (NoteModel.private == False)) \
+            .filter_by(archive=False)
 
     def save(self):
         db.session.add(self)

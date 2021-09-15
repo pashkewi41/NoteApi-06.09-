@@ -2,7 +2,7 @@ from api import auth, abort, g, Resource, reqparse
 from api.models.note import NoteModel
 from api.models.user import UserModel
 from api.models.tag import TagModel
-from api.schemas.note import NoteSchema, NoteCreateSchema, NoteEditSchema
+from api.schemas.note import NoteSchema, NoteCreateSchema, NoteEditSchema, NoteFilterSchema
 from flask_apispec.views import MethodResource
 from flask_apispec import marshal_with, use_kwargs, doc
 from webargs import fields
@@ -59,9 +59,14 @@ class NotesListResource(MethodResource):
     @auth.login_required
     @doc(summary="Get notes list", security=[{"basicAuth": []}])
     @marshal_with(NoteSchema(many=True), code=200)
-    def get(self):
+    @use_kwargs(NoteFilterSchema, location='query')
+    def get(self, **kwargs):
         author = g.user
         notes = NoteModel.get_all_for_user(author)
+        if kwargs.get("tag") is not None:
+            ... # TODO: добавить фильтр по имени тега к результату
+        if kwargs.get("private") is not None:
+            ... # TODO: добавить фильтр приватные/публичные к результату
         return notes, 200
 
     @auth.login_required
@@ -107,22 +112,25 @@ class NoteAddTagsResource(MethodResource):
         return note, 200
 
 
-@doc(tags=['NotesFilter'])
-class NoteFilterResource(MethodResource):
-    # GET: /notes/filter?tag=<tag_name>
-    @use_kwargs({"tag": fields.Str()}, location='query')
-    @marshal_with(NoteSchema(many=True), code=200)
-    def get(self, **kwargs):
-        notes = NoteModel.query.filter(NoteModel.tags.any(name=kwargs["tag"]))
-        return notes, 200
+# @doc(tags=['NotesFilter'])
+# class NoteFilterResource(MethodResource):
+#     # GET: /notes/filter?tag=<tag_name>
+#     # GET: /notes?tag=<tag_name>
+#     @use_kwargs({"tag": fields.Str()}, location='query')
+#     @marshal_with(NoteSchema(many=True), code=200)
+#     def get(self, **kwargs):
+#         notes = NoteModel.query.filter(NoteModel.tags.any(name=kwargs["tag"]))
+#         return notes, 200
 
 
-@doc(tags=['NotesFilter'])
-class NoteFilterByUsernameResource(MethodResource):
-    # GET: /notes/public/filter?username=<un>
-    @use_kwargs({"username": fields.Str()}, location='query')
-    @marshal_with(NoteSchema(many=True), code=200)
-    def get(self, **kwargs):
-        print("query=", kwargs)
-        notes = NoteModel.query.filter(NoteModel.author.has(username=kwargs["username"]))
-        return notes, 200
+# @doc(tags=['NotesFilter'])
+# class NoteFilterByUsernameResource(MethodResource):
+#     # GET: /notes/public/filter?username=<un>
+#     # GET: /notes?public=True&username=<un>
+#     # GET: /notes?public=True&tag=<tag_name>
+#     @use_kwargs({"username": fields.Str()}, location='query')
+#     @marshal_with(NoteSchema(many=True), code=200)
+#     def get(self, **kwargs):
+#         print("query=", kwargs)
+#         notes = NoteModel.query.filter(NoteModel.author.has(username=kwargs["username"]))
+#         return notes, 200

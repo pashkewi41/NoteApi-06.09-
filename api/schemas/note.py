@@ -40,7 +40,6 @@ class NoteEditSchema(ma.SQLAlchemyAutoSchema):
     private = ma.auto_field(required=False)
 
 
-
 class NoteFilterSchema(ma.SQLAlchemySchema):
     private = ma.Boolean(required=False)
     tag = ma.String(required=False)

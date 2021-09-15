@@ -1,7 +1,5 @@
 from api import api, app, docs
-from api.resources.note import NoteResource, NotesListResource, \
-    NoteFilterResource, NoteAddTagsResource, NoteFilterByUsernameResource,\
-    NoteRestoreResource
+from api.resources.note import NoteResource, NotesListResource,  NoteAddTagsResource, NoteRestoreResource
 from api.resources.user import UserResource, UsersListResource
 from api.resources.auth import TokenResource
 from api.resources.tag import TagsResource, TagsListResource
@@ -34,12 +32,12 @@ api.add_resource(NoteRestoreResource,
 api.add_resource(NoteAddTagsResource,
                  '/notes/<int:note_id>/tags',  # PUT
                  )
-api.add_resource(NoteFilterResource,
-                 '/notes/filter',  # GET
-                 )
-api.add_resource(NoteFilterByUsernameResource,
-                 '/notes/public/filter',  # GET
-                 )
+# api.add_resource(NoteFilterResource,
+#                  '/notes/filter',  # GET
+#                  )
+# api.add_resource(NoteFilterByUsernameResource,
+#                  '/notes/public/filter',  # GET
+#                  )
 
 api.add_resource(TagsListResource,
                  '/tags'
@@ -50,9 +48,9 @@ docs.register(UsersListResource)
 docs.register(NoteResource)
 docs.register(NoteRestoreResource)
 docs.register(NotesListResource)
-docs.register(NoteFilterResource)
+# docs.register(NoteFilterResource)
 docs.register(NoteAddTagsResource)
-docs.register(NoteFilterByUsernameResource)
+# docs.register(NoteFilterByUsernameResource)
 docs.register(TagsListResource)
 
 msg = Message('test subject', sender=Config.ADMINS[0], recipients=Config.ADMINS)
