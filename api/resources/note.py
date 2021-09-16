@@ -66,9 +66,9 @@ class NotesListResource(MethodResource):
         author = g.user
         notes = NoteModel.get_all_for_user(author)
         if kwargs.get("tag") is not None:
-            ... # TODO: добавить фильтр по имени тега к результату
+            notes = notes.filter(NoteModel.tags.any(name=kwargs['tag']))
         if kwargs.get("private") is not None:
-            ... # TODO: добавить фильтр приватные/публичные к результату
+            notes = notes.filter_by(private=kwargs['private'])
         return notes, 200
 
     @auth.login_required
