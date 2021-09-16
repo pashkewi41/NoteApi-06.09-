@@ -1,4 +1,4 @@
-from api import auth, abort, g, Resource, reqparse
+from api import auth, abort, g, Resource, reqparse, api
 from api.models.note import NoteModel
 from api.models.user import UserModel
 from api.models.tag import TagModel
@@ -10,6 +10,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 
 @doc(tags=['Notes'])
+@api.resource('/notes/<int:note_id>')
 class NoteResource(MethodResource):
     @auth.login_required
     @doc(summary="Get note by id", security=[{"basicAuth": []}])
@@ -55,6 +56,7 @@ class NoteResource(MethodResource):
 
 
 @doc(tags=['Notes'])
+@api.resource('/notes')
 class NotesListResource(MethodResource):
     @auth.login_required
     @doc(summary="Get notes list", security=[{"basicAuth": []}])
