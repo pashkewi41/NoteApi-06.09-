@@ -1,13 +1,17 @@
 import os
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
+
+# import pathlib - рекомендация для работы с путями
 base_dir = os.path.dirname(os.path.abspath(__file__))
 
 security_definitions = {
-   "basicAuth": {
-       "type": "basic"
-   }
+    "basicAuth": {
+        "type": "basic"
+    }
 }
+ma_plugin = MarshmallowPlugin()
+
 
 class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(base_dir, 'base.db')
@@ -24,7 +28,7 @@ class Config:
     APISPEC_SPEC = APISpec(
         title='Notes Project',
         version='v1',
-        plugins=[MarshmallowPlugin()],
+        plugins=[ma_plugin],
         securityDefinitions=security_definitions,
         security=[],
         openapi_version='2.0.0'
@@ -37,6 +41,8 @@ class Config:
     MAIL_USE_SSL = True
     MAIL_USERNAME = 'booblegum42@gmail.com'
     MAIL_PASSWORD = '****'
+    UPLOAD_FOLDER_NAME = 'upload'
+    UPLOAD_FOLDER = os.path.join(base_dir, UPLOAD_FOLDER_NAME)
 
     # administrator list
     ADMINS = ['booblegum42@gmail.com']
