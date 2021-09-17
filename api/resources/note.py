@@ -66,8 +66,9 @@ class NotesListResource(MethodResource):
     def get(self, **kwargs):
         author = g.user
         notes = NoteModel.get_all_for_user(author)
-        if kwargs.get("tag") is not None:
-            notes = notes.filter(NoteModel.tags.any(name=kwargs['tag']))
+        if kwargs.get("tags") is not None:
+            # notes = notes.filter(NoteModel.tags.any(name=kwargs['tag']))
+            notes = notes.query.filter(NoteModel.tags.any(TagModel.id.in_(kwargs['tags']))).all()
         if kwargs.get("private") is not None:
             notes = notes.filter_by(private=kwargs['private'])
         return notes, 200

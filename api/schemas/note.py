@@ -42,4 +42,4 @@ class NoteEditSchema(ma.SQLAlchemyAutoSchema):
 
 class NoteFilterSchema(ma.SQLAlchemySchema):
     private = ma.Boolean(required=False)
-    tag = ma.String(required=False)
+    tags = ma.List(ma.String())
