@@ -43,6 +43,6 @@ class Config:
     MAIL_PASSWORD = '****'
     UPLOAD_FOLDER_NAME = 'upload'
     UPLOAD_FOLDER = os.path.join(base_dir, UPLOAD_FOLDER_NAME)
-
+    LANGUAGES = ['en', 'ru']
     # administrator list
     ADMINS = ['booblegum42@gmail.com']
