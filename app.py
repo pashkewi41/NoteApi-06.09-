@@ -1,5 +1,6 @@
 from api import api, app, docs
-from api.resources.note import NoteResource, NotesListResource, NoteAddTagsResource, NoteRestoreResource
+from api.resources.note import NoteResource, NotesListResource, NoteAddTagsResource, \
+    NoteRestoreResource, NotesListByAuthorResource
 from api.resources.user import UserResource, UsersListResource
 from api.resources.auth import TokenResource
 from api.resources.tag import TagsResource, TagsListResource
@@ -47,11 +48,15 @@ api.add_resource(TagsListResource,
 
 docs.register(UserResource)
 docs.register(UsersListResource)
+
 docs.register(NoteResource)
 docs.register(NoteRestoreResource)
 docs.register(NotesListResource)
+docs.register(NotesListByAuthorResource)
 docs.register(NoteAddTagsResource)
+
 docs.register(TagsListResource)
+
 docs.register(UploadPictureResource)
 
 msg = Message('test subject', sender=Config.ADMINS[0], recipients=Config.ADMINS)

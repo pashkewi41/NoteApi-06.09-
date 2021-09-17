@@ -80,3 +80,16 @@ class UsersListResource(MethodResource):
             abort(400, error=f"User with username:{user.username} already exist")
         logging.info("User create!!!")
         return user, 201
+
+#  Решение: Найти автора/авторов по части имени
+# @doc(tags=['Users extra options'])
+# @api.resource('/users/find_by_username')
+# class UserFindLikeResource(MethodResource):
+#     @doc(summary="Find users like ", description='Find users like')
+#     @use_kwargs({"username": fields.String(load_default="")}, location='query')
+#     @marshal_with(UserSchema(many=True))
+#     def get(self, username):
+#         if username:
+#             users = UserModel.query.filter(UserModel.username.ilike(f"%{username}%"))
+#             return users, 200
+#         abort(400, error=f"Need key to search")

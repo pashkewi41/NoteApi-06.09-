@@ -43,7 +43,7 @@ logging.basicConfig(filename='record.log',
                     level=logging.INFO,
                     format=f'%(asctime)s %(levelname)s %(name)s : %(message)s')
 app.logger.setLevel(logging.INFO)
-logging.getLogger('werkzeug').setLevel(logging.WARNING)
+logging.getLogger('werkzeug').setLevel(logging.INFO)
 
 
 @babel.localeselector

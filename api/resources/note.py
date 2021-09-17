@@ -115,6 +115,20 @@ class NoteAddTagsResource(MethodResource):
         return note, 200
 
 
+@doc(tags=['Notes'])
+@api.resource('/users/<int:user_id>/notes')
+class NotesListByAuthorResource(MethodResource):
+    @doc(summary="Get notes list by user")
+    @marshal_with(NoteSchema(many=True), code=200)
+    def get(self, user_id):
+        UserModel.query.get_or_404(user_id, description="User not found")
+        notes = NoteModel.query.\
+            filter_by(author_id=user_id).\
+            filter_by(private=False).\
+            filter_by(archive=False).all()
+        return notes, 200
+
+
 # @doc(tags=['NotesFilter'])
 # class NoteFilterResource(MethodResource):
 #     # GET: /notes/filter?tag=<tag_name>
