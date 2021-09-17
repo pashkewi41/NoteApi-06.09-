@@ -1,6 +1,7 @@
 from api import Resource, abort, reqparse, auth
 from api.models.user import UserModel
-from api.schemas.user import user_schema, users_schema, UserSchema, UserRequestSchema
+from api.models.file import FileModel
+from api.schemas.user import UserSchema, UserCreateSchema
 from flask_apispec.views import MethodResource
 from flask_apispec import marshal_with, use_kwargs, doc
 from webargs import fields
@@ -64,9 +65,15 @@ class UsersListResource(MethodResource):
         users = UserModel.query.all()
         return users, 200
 
-    @use_kwargs(UserRequestSchema, location='json')
+    @use_kwargs(UserCreateSchema, location='json')
+    @doc(description='Create user by id')
     @marshal_with(UserSchema, code=201)
     def post(self, **kwargs):
+        if kwargs.get("photo_id"):
+            photo_id = kwargs["photo_id"]
+            del kwargs["photo_id"]
+            photo = FileModel.query.get(photo_id)
+            kwargs["photo"] = photo
         user = UserModel(**kwargs)
         user.save()
         if not user.id:
