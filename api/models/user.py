@@ -16,6 +16,7 @@ class UserModel(db.Model):
     role = db.Column(db.String(32), nullable=False, server_default="admin", default="simple_user")
     photo_id = db.Column(db.Integer, db.ForeignKey("file_model.id"), nullable=True)
     photo = db.relationship(FileModel, backref="user", uselist=False, lazy='joined')
+    photo_url = db.Column(db.String(128))
 
     def __init__(self, **kwargs):
         password = kwargs["password"]

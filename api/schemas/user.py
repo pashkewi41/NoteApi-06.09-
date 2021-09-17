@@ -18,6 +18,7 @@ class UserSchema(ma.SQLAlchemySchema):
     is_staff = ma.auto_field()
     role = ma.auto_field()
     photo = ma.Nested(FileSchema())
+    photo_url = ma.auto_field()
 
     _links = ma.Hyperlinks({
         'self': ma.URLFor('userresource', values=dict(user_id="<id>")),
@@ -33,3 +34,4 @@ class UserCreateSchema(ma.SQLAlchemySchema):
     username = ma.Str()
     password = ma.Str()
     photo_id = ma.Integer(required=False)
+    photo_url = ma.Str(required=False)
